@@ -8,81 +8,71 @@ import Main from "./layouts/Main";
 import Title from "./components/Title";
 
 export default function Home() {
-  const [hours, setHours] = useState("00");
-  const [minutes, setMinutes] = useState("01");
-  const [seconds, setSeconds] = useState("00");
+  const [time, setTime] = useState({
+    hours: "00",
+    minutes: "01",
+    seconds: "00",
+  });
 
-  const handleHoursChange = (e) => {
+  const handleChange = (e, type) => {
     let value = e.target.value.trim();
 
-    if (value === "") {
-      setHours("00");
-      return;
-    }
-
-    if (/^\d{1,2}$/.test(value)) {
-      if (value > 24) {
-        setHours("23");
+    if (/^\d*$/.test(value)) {
+      if (value === "") {
+        setTime((prev) => ({
+          ...prev,
+          [type]: type === "minutes" ? "01" : "00",
+        }));
       } else {
-        setHours(value);
+        const max = type === "hours" ? 23 : 59;
+        setTime((prev) => ({
+          ...prev,
+          [type]: Math.min(parseInt(value, 10), max)
+            .toString()
+            .padStart(2, "0"),
+        }));
       }
-    } else {
-      setHours("00");
     }
   };
 
-  const handleMinutesChange = (e) => {
-    let value = e.target.value.trim();
-
-    if (value === "") {
-      setMinutes("01");
-      return;
-    }
-
-    if (/^\d{1,2}$/.test(value)) {
-      if (value > 59) {
-        setMinutes("59");
-      } else {
-        setMinutes(value);
-      }
-    } else {
-      setMinutes("00");
-    }
-  };
-
-  const handleSecondsChange = (e) => {
-    let value = e.target.value.trim();
-
-    if (value === "") {
-      setSeconds("00");
-      return;
-    }
-
-    if (/^\d{1,2}$/.test(value)) {
-      if (value > 59) {
-        setSeconds("59");
-      } else {
-        setSeconds(value);
-      }
-    } else {
-      setSeconds("00");
+  const handleBlur = (type) => {
+    if (time[type].length === 1) {
+      setTime((prev) => ({
+        ...prev,
+        [type]: prev[type].padStart(2, "0"),
+      }));
     }
   };
 
   return (
     <Main className="min-h-full">
       <Title>Timer</Title>
+      <div className="flex justify-center pt-5">
+        <p className="text-center text-neutral-content">hr : min : sec</p>
+      </div>
       <div className="border rounded grid grid-flow-col gap-5 text-center auto-cols-max mt-5 bg-base-200 px-4 py-2">
         <div className="flex flex-col items-center w-40">
-          <Input value={hours} onChange={handleHoursChange} />
+          <Input
+            value={time.hours}
+            onChange={(e) => handleChange(e, "hours")}
+            onBlur={() => handleBlur("hours")}
+          />
         </div>
         <InputSpacing />
         <div className="flex flex-col items-center w-40">
-          <Input value={minutes} onChange={handleMinutesChange} />
+          <Input
+            value={time.minutes}
+            onChange={(e) => handleChange(e, "minutes")}
+            onBlur={() => handleBlur("minutes")}
+          />
         </div>
         <InputSpacing />
         <div className="flex flex-col items-center w-40">
-          <Input value={seconds} onChange={handleSecondsChange} />
+          <Input
+            value={time.seconds}
+            onChange={(e) => handleChange(e, "seconds")}
+            onBlur={() => handleBlur("seconds")}
+          />
         </div>
       </div>
       <div className="mt-4">

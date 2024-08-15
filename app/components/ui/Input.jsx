@@ -11,6 +11,7 @@ export const Input = ({
   name = "",
   value,
   onChange,
+  onBlur,
   ...props
 }) => {
   return (
@@ -20,6 +21,7 @@ export const Input = ({
       name={name}
       value={value}
       onChange={onChange}
+      onBlur={onBlur}
       {...props}
     />
   );
