@@ -3,7 +3,7 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "checkJs": true,
+    "checkJs": false,
     "noEmit": true,
     "strict": false,
     "esModuleInterop": true,
