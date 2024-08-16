@@ -6,7 +6,7 @@ import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
 import Main from "./layouts/Main";
 import Title from "./components/Title";
-import Legend from "./components/ui/Legend";
+import Legend from "./components/Legend";
 import useTimerStore from "./hooks/useTimerStore";
 
 export default function Home() {
