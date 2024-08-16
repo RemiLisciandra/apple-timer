@@ -6,6 +6,8 @@ import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
 import Main from "./layouts/Main";
 import Title from "./components/Title";
+import Legend from "./components/ui/Legend";
+import useTimerStore from "./hooks/useTimerStore";
 
 export default function Home() {
   const [time, setTime] = useState({
@@ -42,14 +44,35 @@ export default function Home() {
         [type]: prev[type].padStart(2, "0"),
       }));
     }
+
+    if (type === "minutes" && time.minutes === "00") {
+      setTime((prev) => ({
+        ...prev,
+        minutes: "01",
+      }));
+    }
+  };
+
+  const { addTimer } = useTimerStore();
+
+  const handleAddTimer = () => {
+    const ms =
+      parseInt(time.hours, 10) * 3600000 +
+      parseInt(time.minutes, 10) * 60000 +
+      parseInt(time.seconds, 10) * 1000;
+
+    if (ms < 1000) {
+      alert("Timer must be at least 1 seconds");
+      return;
+    }
+
+    addTimer(ms);
   };
 
   return (
     <Main className="min-h-full">
       <Title>Timer</Title>
-      <div className="flex justify-center pt-5">
-        <p className="text-center text-neutral-content">hr : min : sec</p>
-      </div>
+      <Legend>hr : min : sec</Legend>
       <div className="border rounded grid grid-flow-col gap-5 text-center auto-cols-max mt-5 bg-base-200 px-4 py-2">
         <div className="flex flex-col items-center w-40">
           <Input
@@ -76,7 +99,9 @@ export default function Home() {
         </div>
       </div>
       <div className="mt-4">
-        <Button variant="success">Add timer</Button>
+        <Button variant="success" onClick={handleAddTimer}>
+          Add timer
+        </Button>
       </div>
     </Main>
   );
