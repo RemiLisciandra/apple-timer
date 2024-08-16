@@ -10,6 +10,7 @@ export const CircularProgress = ({
   radiusRatio = 0.9,
 }) => {
   const canvasRef = useRef(null);
+  const previousProgressRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -18,20 +19,48 @@ export const CircularProgress = ({
     const radius = (width / 2) * radiusRatio;
     const center = width / 2;
 
-    context.clearRect(0, 0, width, width);
+    const currentProgress = (timeLeft / duration) * 2 * Math.PI;
 
-    context.beginPath();
-    context.arc(center, center, radius, 0, 2 * Math.PI);
-    context.fillStyle = "#2d2d2d";
-    context.fill();
+    const animateProgress = (start, end) => {
+      const startTime = performance.now();
 
-    const progress = (timeLeft / duration) * 2 * Math.PI;
+      const draw = (now) => {
+        const elapsedTime = now - startTime;
+        const animationDuration = 300;
+        const t = Math.min(elapsedTime / animationDuration, 1);
 
-    context.beginPath();
-    context.arc(center, center, radius, -Math.PI / 2, -Math.PI / 2 + progress);
-    context.lineWidth = 10;
-    context.strokeStyle = "#f6d860";
-    context.stroke();
+        const progress = start + (end - start) * t;
+
+        context.clearRect(0, 0, width, width);
+
+        context.beginPath();
+        context.arc(center, center, radius, 0, 2 * Math.PI);
+        context.fillStyle = "#2d2d2d";
+        context.fill();
+
+        context.beginPath();
+        context.arc(
+          center,
+          center,
+          radius,
+          -Math.PI / 2,
+          -Math.PI / 2 + progress
+        );
+        context.lineWidth = 10;
+        context.strokeStyle = "#ed9619";
+        context.stroke();
+
+        if (t < 1) {
+          requestAnimationFrame(draw);
+        } else {
+          previousProgressRef.current = end;
+        }
+      };
+
+      requestAnimationFrame(draw);
+    };
+
+    animateProgress(previousProgressRef.current, currentProgress);
   }, [timeLeft, duration, width, radiusRatio]);
 
   return (

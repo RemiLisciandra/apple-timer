@@ -1,14 +1,17 @@
-import create from "zustand";
+import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
 const saveTimersToLocalStorage = (timers) => {
-  localStorage.setItem("timers", JSON.stringify(timers));
+  if (typeof window !== undefined)
+    localStorage.setItem("timers", JSON.stringify(timers));
 };
 
 const loadTimersFromLocalStorage = () => {
-  const storedTimers = localStorage.getItem("timers");
-  if (storedTimers) {
-    return JSON.parse(storedTimers);
+  if (typeof window !== undefined) {
+    const storedTimers = localStorage.getItem("timers");
+    if (storedTimers) {
+      return JSON.parse(storedTimers);
+    }
   }
   return [];
 };
@@ -53,7 +56,6 @@ export const useTimerStore = create((set) => ({
           return {
             ...timer,
             isRunning: true,
-            timeLeft: timer.duration,
             endAt: Date.now() + timer.timeLeft,
           };
         }
