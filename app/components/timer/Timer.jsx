@@ -6,13 +6,13 @@ import {
   getTimeText,
   getDurationText,
   millisecondsToHMS,
-} from "./app/utils/timeUtils";
+} from "./../../utils/timeUtils";
 import CircularProgress from "./CircularProgress";
 import TimerHeader from "./TimerHeader";
 import TimerDisplay from "./TimerDisplay";
 import DurationDisplay from "./DurationDisplay";
 import TimerControls from "./TimerControls";
-import useTimerStore from "./app/hooks/useTimerStore";
+import useTimerStore from "../../hooks/useTimerStore";
 
 export const Timer = ({ propsId }) => {
   const timer = useTimerStore((s) => s.timers.find((t) => t?.id === propsId));
@@ -46,13 +46,12 @@ export const Timer = ({ propsId }) => {
           radiusRatio={0.9}
         />
         <TimerHeader finishDate={new Date(endAt)} />
-        <TimerDisplay
-          timeText={timeText}
-          timeLeftFormatted={millisecondsToHMS(timeLeft)}
-        />
+        <TimerDisplay timeText={timeText} />
         <DurationDisplay durationText={durationText} />
       </div>
       <TimerControls id={id} isRunning={isRunning} timeLeft={timeLeft} />
     </motion.div>
   );
 };
+
+export default Timer;

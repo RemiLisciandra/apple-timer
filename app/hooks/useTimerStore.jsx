@@ -1,31 +1,31 @@
-import { useState } from "react";
+import create from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
-const useTimerStore = () => {
-  const [timers, setTimers] = useState([]);
-
-  const addTimer = (duration) => {
+export const useTimerStore = create((set) => ({
+  timers: [],
+  addTimer: (duration) => {
     const newTimer = {
       id: uuidv4(),
       duration,
       timeLeft: duration,
       endAt: Date.now() + duration,
-      isRunning: false,
+      isRunning: true,
     };
-    setTimers((prevTimers) => [...prevTimers, newTimer]);
-  };
+    set((state) => ({
+      timers: [...state.timers, newTimer],
+    }));
+  },
+  removeTimer: (id) =>
+    set((state) => ({
+      timers: state.timers.filter((timer) => timer.id !== id),
+    })),
+  toggleRunning: (id) =>
+    set((state) => {
+      const timerIndex = state.timers.findIndex((timer) => timer.id === id);
 
-  const removeTimer = (id) => {
-    setTimers((prevTimers) => prevTimers.filter((pt) => pt.id !== id));
-  };
+      if (timerIndex === -1) return state;
 
-  const toggleRunning = (id) => {
-    setTimers((prevTimers) => {
-      const timerIndex = prevTimers.findIndex((timer) => timer.id === id);
-
-      if (timerIndex === -1) return prevTimers;
-
-      const timerToUpdate = prevTimers[timerIndex];
+      const timerToUpdate = state.timers[timerIndex];
 
       if (timerToUpdate.timeLeft === 0) {
         const updatedTimer = {
@@ -33,12 +33,13 @@ const useTimerStore = () => {
           timeLeft: timerToUpdate.duration,
           isRunning: false,
         };
-
-        return [
-          ...prevTimers.slice(0, timerIndex),
-          updatedTimer,
-          ...prevTimers.slice(timerIndex + 1),
-        ];
+        return {
+          timers: [
+            ...state.timers.slice(0, timerIndex),
+            updatedTimer,
+            ...state.timers.slice(timerIndex + 1),
+          ],
+        };
       }
 
       if (!timerToUpdate.isRunning) {
@@ -47,34 +48,30 @@ const useTimerStore = () => {
           isRunning: true,
           endAt: Date.now() + timerToUpdate.timeLeft,
         };
-        return [
-          ...prevTimers.slice(0, timerIndex),
-          updatedTimer,
-          ...prevTimers.slice(timerIndex + 1),
-        ];
+        return {
+          timers: [
+            ...state.timers.slice(0, timerIndex),
+            updatedTimer,
+            ...state.timers.slice(timerIndex + 1),
+          ],
+        };
       }
 
       if (timerToUpdate.isRunning) {
         const updatedTimer = {
           ...timerToUpdate,
           isRunning: false,
-          endAt: timerToUpdate.timeLeft - Date.now(),
+          timeLeft: timerToUpdate.endAt - Date.now(),
         };
-        return [
-          ...prevTimers.slice(0, timerIndex),
-          updatedTimer,
-          ...prevTimers.slice(timerIndex + 1),
-        ];
+        return {
+          timers: [
+            ...state.timers.slice(0, timerIndex),
+            updatedTimer,
+            ...state.timers.slice(timerIndex + 1),
+          ],
+        };
       }
-    });
-  };
-
-  return {
-    timers,
-    addTimer,
-    removeTimer,
-    toggleRunning,
-  };
-};
+    }),
+}));
 
 export default useTimerStore;

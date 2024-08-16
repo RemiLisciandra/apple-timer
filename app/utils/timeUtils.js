@@ -12,11 +12,11 @@ export const getDurationText = (ms) => {
   const { hrs, mins, secs } = millisecondsToHMS(ms);
 
   if (hrs > 0) {
-    return `${hrs}h`;
+    return `${hrs}hr`;
   } else if (mins > 0) {
     return `${mins}min`;
   } else {
-    return `${secs}s`;
+    return `${secs}sec`;
   }
 };
 

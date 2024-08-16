@@ -36,7 +36,12 @@ export const CircularProgress = ({
 
   return (
     <div className={className}>
-      <canvas ref={canvasRef} width={width} height={width}></canvas>
+      <canvas
+        className="z-0"
+        ref={canvasRef}
+        width={width}
+        height={width}
+      ></canvas>
     </div>
   );
 };

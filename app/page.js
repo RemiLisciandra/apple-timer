@@ -8,6 +8,7 @@ import Main from "./layouts/Main";
 import Title from "./components/Title";
 import Legend from "./components/Legend";
 import useTimerStore from "./hooks/useTimerStore";
+import Timer from "./components/timer/Timer";
 
 export default function Home() {
   const [time, setTime] = useState({
@@ -53,7 +54,7 @@ export default function Home() {
     }
   };
 
-  const { addTimer } = useTimerStore();
+  const { addTimer, timers } = useTimerStore();
 
   const handleAddTimer = () => {
     const ms =
@@ -102,6 +103,11 @@ export default function Home() {
         <Button variant="success" onClick={handleAddTimer}>
           Add timer
         </Button>
+      </div>
+      <div className="mt-5 grid grid-cols-4 gap-4">
+        {timers.map((timer) => (
+          <Timer key={timer.id} propsId={timer.id} />
+        ))}
       </div>
     </Main>
   );
