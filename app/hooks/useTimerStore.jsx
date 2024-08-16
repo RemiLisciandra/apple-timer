@@ -20,58 +20,28 @@ export const useTimerStore = create((set) => ({
       timers: state.timers.filter((timer) => timer.id !== id),
     })),
   toggleRunning: (id) =>
-    set((state) => {
-      const timerIndex = state.timers.findIndex((timer) => timer.id === id);
+    set((state) => ({
+      timers: state.timers.map((timer) => {
+        if (timer.id !== id) return timer;
 
-      if (timerIndex === -1) return state;
+        if (!timer.isRunning && timer.timeLeft === 0) {
+          return {
+            ...timer,
+            isRunning: true,
+            timeLeft: timer.duration,
+            endAt: Date.now() + timer.duration,
+          };
+        }
 
-      const timerToUpdate = state.timers[timerIndex];
-
-      if (timerToUpdate.timeLeft === 0) {
-        const updatedTimer = {
-          ...timerToUpdate,
-          timeLeft: timerToUpdate.duration,
-          isRunning: false,
-        };
         return {
-          timers: [
-            ...state.timers.slice(0, timerIndex),
-            updatedTimer,
-            ...state.timers.slice(timerIndex + 1),
-          ],
+          ...timer,
+          isRunning: !timer.isRunning,
+          endAt: timer.isRunning
+            ? Date.now() + timer.timeLeft
+            : timer.endAt - Date.now(),
         };
-      }
-
-      if (!timerToUpdate.isRunning) {
-        const updatedTimer = {
-          ...timerToUpdate,
-          isRunning: true,
-          endAt: Date.now() + timerToUpdate.timeLeft,
-        };
-        return {
-          timers: [
-            ...state.timers.slice(0, timerIndex),
-            updatedTimer,
-            ...state.timers.slice(timerIndex + 1),
-          ],
-        };
-      }
-
-      if (timerToUpdate.isRunning) {
-        const updatedTimer = {
-          ...timerToUpdate,
-          isRunning: false,
-          timeLeft: timerToUpdate.endAt - Date.now(),
-        };
-        return {
-          timers: [
-            ...state.timers.slice(0, timerIndex),
-            updatedTimer,
-            ...state.timers.slice(timerIndex + 1),
-          ],
-        };
-      }
-    }),
+      }),
+    })),
 }));
 
 export default useTimerStore;

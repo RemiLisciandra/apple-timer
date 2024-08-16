@@ -9,8 +9,11 @@ import Title from "./components/Title";
 import Legend from "./components/Legend";
 import useTimerStore from "./hooks/useTimerStore";
 import Timer from "./components/timer/Timer";
+import useTimerInterval from "./hooks/useTimerInterval";
 
 export default function Home() {
+  useTimerInterval();
+
   const [time, setTime] = useState({
     hours: "00",
     minutes: "01",
