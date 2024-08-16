@@ -27,7 +27,7 @@ export default function Home() {
       if (value === "") {
         setTime((prev) => ({
           ...prev,
-          [type]: type === "minutes" ? "01" : "00",
+          [type]: "00",
         }));
       } else {
         const max = type === "hours" ? 23 : 59;
@@ -46,13 +46,6 @@ export default function Home() {
       setTime((prev) => ({
         ...prev,
         [type]: prev[type].padStart(2, "0"),
-      }));
-    }
-
-    if (type === "minutes" && time.minutes === "00") {
-      setTime((prev) => ({
-        ...prev,
-        minutes: "01",
       }));
     }
   };

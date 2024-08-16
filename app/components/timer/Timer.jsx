@@ -2,11 +2,7 @@
 
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import {
-  getTimeText,
-  getDurationText,
-  millisecondsToHMS,
-} from "./../../utils/timeUtils";
+import { getTimeText, getDurationText } from "./../../utils/timeUtils";
 import CircularProgress from "./CircularProgress";
 import TimerHeader from "./TimerHeader";
 import TimerDisplay from "./TimerDisplay";

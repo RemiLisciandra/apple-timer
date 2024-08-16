@@ -1,8 +1,20 @@
 import create from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
+const saveTimersToLocalStorage = (timers) => {
+  localStorage.setItem("timers", JSON.stringify(timers));
+};
+
+const loadTimersFromLocalStorage = () => {
+  const storedTimers = localStorage.getItem("timers");
+  if (storedTimers) {
+    return JSON.parse(storedTimers);
+  }
+  return [];
+};
+
 export const useTimerStore = create((set) => ({
-  timers: [],
+  timers: loadTimersFromLocalStorage(),
   addTimer: (duration) => {
     const newTimer = {
       id: uuidv4(),
@@ -11,17 +23,21 @@ export const useTimerStore = create((set) => ({
       endAt: Date.now() + duration,
       isRunning: true,
     };
-    set((state) => ({
-      timers: [...state.timers, newTimer],
-    }));
+    set((state) => {
+      const updatedTimers = [...state.timers, newTimer];
+      saveTimersToLocalStorage(updatedTimers);
+      return { timers: updatedTimers };
+    });
   },
   removeTimer: (id) =>
-    set((state) => ({
-      timers: state.timers.filter((timer) => timer.id !== id),
-    })),
+    set((state) => {
+      const updatedTimers = state.timers.filter((timer) => timer.id !== id);
+      saveTimersToLocalStorage(updatedTimers);
+      return { timers: updatedTimers };
+    }),
   toggleRunning: (id) =>
-    set((state) => ({
-      timers: state.timers.map((timer) => {
+    set((state) => {
+      const updatedTimers = state.timers.map((timer) => {
         if (timer.id !== id) return timer;
 
         if (!timer.isRunning && timer.timeLeft === 0) {
@@ -33,15 +49,25 @@ export const useTimerStore = create((set) => ({
           };
         }
 
+        if (!timer.isRunning) {
+          return {
+            ...timer,
+            isRunning: true,
+            timeLeft: timer.duration,
+            endAt: Date.now() + timer.timeLeft,
+          };
+        }
+
         return {
           ...timer,
-          isRunning: !timer.isRunning,
-          endAt: timer.isRunning
-            ? Date.now() + timer.timeLeft
-            : timer.endAt - Date.now(),
+          isRunning: false,
+          timeLeft: timer.endAt - Date.now(),
         };
-      }),
-    })),
+      });
+
+      saveTimersToLocalStorage(updatedTimers);
+      return { timers: updatedTimers };
+    }),
 }));
 
 export default useTimerStore;
