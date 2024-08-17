@@ -4,8 +4,8 @@ import useTimerStore from "./useTimerStore";
 export const useTimerInterval = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
-      useTimerStore.setState((state) => ({
-        timers: state.timers.map((timer) => {
+      useTimerStore.setState((state) => {
+        const updatedTimers = state.timers.map((timer) => {
           if (!timer.isRunning) {
             return timer;
           }
@@ -35,8 +35,12 @@ export const useTimerInterval = () => {
             ...timer,
             timeLeft: newTime,
           };
-        }),
-      }));
+        });
+
+        localStorage.setItem("timers", JSON.stringify(updatedTimers));
+
+        return { timers: updatedTimers };
+      });
     }, 1000);
 
     return () => clearInterval(intervalId);
