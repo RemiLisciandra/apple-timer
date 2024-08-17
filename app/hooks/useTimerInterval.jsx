@@ -15,7 +15,7 @@ export const useTimerInterval = () => {
             audio.play();
 
             if (Notification.permission === "granted") {
-              new Notification("Timer finished !");
+              new Notification("Timer finished!");
             }
 
             return {

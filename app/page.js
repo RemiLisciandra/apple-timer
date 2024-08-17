@@ -10,8 +10,10 @@ import Legend from "./components/Legend";
 import useTimerStore from "./hooks/useTimerStore";
 import Timer from "./components/timer/Timer";
 import useTimerInterval from "./hooks/useTimerInterval";
+import useHydrateTimers from "./hooks/useHydrateTimers";
 
 export default function Home() {
+  useHydrateTimers();
   useTimerInterval();
 
   const [time, setTime] = useState({
