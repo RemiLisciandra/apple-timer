@@ -70,7 +70,7 @@ export default function Home() {
 
   return (
     <Main className="min-h-full">
-      <Title>Timer</Title>
+      <Title>AppleTimer</Title>
       <Legend>hr : min : sec</Legend>
       <div className="border rounded grid grid-flow-col gap-5 text-center auto-cols-max mt-5 bg-base-200 px-4 py-2">
         <div className="flex flex-col items-center w-40">
